@@ -17,8 +17,27 @@ const db = getFirestore(app);
 
 exports.handler = async (event) => {
   try {
-    // Parse email from request body
-    const { email } = JSON.parse(event.body);
+    // Ensure the request body exists
+    if (!event.body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Request body is missing" }),
+      };
+    }
+
+    // Parse the request body
+    let body;
+    try {
+      body = JSON.parse(event.body);
+    } catch (error) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Invalid JSON format", error: error.message }),
+      };
+    }
+
+    // Extract email from the parsed body
+    const { email } = body;
 
     if (!email) {
       return {
@@ -27,7 +46,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // Check if email already exists
+    // Check if the email already exists in Firestore
     const emailsRef = collection(db, "emails");
     const q = query(emailsRef, where("email", "==", email));
     const querySnapshot = await getDocs(q);

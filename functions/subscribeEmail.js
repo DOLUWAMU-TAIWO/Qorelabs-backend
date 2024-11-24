@@ -15,17 +15,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Allowed origins
+const allowedOrigins = ["http://localhost:3000", "https://qorelabs.org"];
+
 exports.handler = async (event) => {
+  // Get the origin of the request
+  const origin = event.headers.origin;
+
+  // Check if the origin is allowed
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": allowedOrigins.includes(origin) ? origin : "http://localhost:3000",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "3600", // Cache preflight response for 1 hour
+  };
+
   // Handle preflight OPTIONS requests
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Max-Age": "3600", // Cache preflight response for 1 hour
-      },
+      headers: corsHeaders,
       body: "",
     };
   }
@@ -35,9 +44,7 @@ exports.handler = async (event) => {
     if (!event.body) {
       return {
         statusCode: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-        },
+        headers: corsHeaders,
         body: JSON.stringify({ message: "Request body is missing" }),
       };
     }
@@ -49,9 +56,7 @@ exports.handler = async (event) => {
     } catch (error) {
       return {
         statusCode: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-        },
+        headers: corsHeaders,
         body: JSON.stringify({ message: "Invalid JSON format", error: error.message }),
       };
     }
@@ -62,9 +67,7 @@ exports.handler = async (event) => {
     if (!email) {
       return {
         statusCode: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-        },
+        headers: corsHeaders,
         body: JSON.stringify({ message: "Email is required" }),
       };
     }
@@ -77,9 +80,7 @@ exports.handler = async (event) => {
     if (!querySnapshot.empty) {
       return {
         statusCode: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-        },
+        headers: corsHeaders,
         body: JSON.stringify({ message: "Email already exists" }),
       };
     }
@@ -89,18 +90,14 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000",
-      },
+      headers: corsHeaders,
       body: JSON.stringify({ message: "Email saved successfully!" }),
     };
   } catch (error) {
     console.error("Error:", error);
     return {
       statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000",
-      },
+      headers: corsHeaders,
       body: JSON.stringify({ message: "Internal Server Error", error: error.message }),
     };
   }

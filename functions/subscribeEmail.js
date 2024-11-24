@@ -21,9 +21,10 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        "Access-Control-Allow-Origin": "http://localhost:3000",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Max-Age": "3600", // Cache preflight response for 1 hour
       },
       body: "",
     };
@@ -35,7 +36,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
         },
         body: JSON.stringify({ message: "Request body is missing" }),
       };
@@ -49,7 +50,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
         },
         body: JSON.stringify({ message: "Invalid JSON format", error: error.message }),
       };
@@ -62,7 +63,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
         },
         body: JSON.stringify({ message: "Email is required" }),
       };
@@ -77,7 +78,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
         },
         body: JSON.stringify({ message: "Email already exists" }),
       };
@@ -89,7 +90,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        "Access-Control-Allow-Origin": "http://localhost:3000",
       },
       body: JSON.stringify({ message: "Email saved successfully!" }),
     };
@@ -98,7 +99,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        "Access-Control-Allow-Origin": "http://localhost:3000",
       },
       body: JSON.stringify({ message: "Internal Server Error", error: error.message }),
     };

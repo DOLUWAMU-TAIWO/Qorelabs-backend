@@ -16,11 +16,27 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 exports.handler = async (event) => {
+  // Handle preflight OPTIONS requests
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+      body: "",
+    };
+  }
+
   try {
     // Ensure the request body exists
     if (!event.body) {
       return {
         statusCode: 400,
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        },
         body: JSON.stringify({ message: "Request body is missing" }),
       };
     }
@@ -32,6 +48,9 @@ exports.handler = async (event) => {
     } catch (error) {
       return {
         statusCode: 400,
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        },
         body: JSON.stringify({ message: "Invalid JSON format", error: error.message }),
       };
     }
@@ -42,6 +61,9 @@ exports.handler = async (event) => {
     if (!email) {
       return {
         statusCode: 400,
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        },
         body: JSON.stringify({ message: "Email is required" }),
       };
     }
@@ -54,6 +76,9 @@ exports.handler = async (event) => {
     if (!querySnapshot.empty) {
       return {
         statusCode: 400,
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+        },
         body: JSON.stringify({ message: "Email already exists" }),
       };
     }
@@ -63,12 +88,18 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+      },
       body: JSON.stringify({ message: "Email saved successfully!" }),
     };
   } catch (error) {
     console.error("Error:", error);
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "http://localhost:3000, https://qorelabs.org",
+      },
       body: JSON.stringify({ message: "Internal Server Error", error: error.message }),
     };
   }

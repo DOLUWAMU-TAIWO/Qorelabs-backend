@@ -98,26 +98,23 @@ exports.handler = async (event) => {
 
     // Email template with HTML and inline CSS
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-        <div style="background-color: #f5f5f5; padding: 20px; text-align: center;">
-          <img src="https://qorelabs.org/logo.png" alt="Qorelabs Logo" style="width: 150px; margin-bottom: 20px;" />
-          <h1 style="color: #8c52ff;">Welcome to Qorelabs!</h1>
-          <p style="font-size: 16px;">Thank you for subscribing to Qorelabs. We're thrilled to have you on board!</p>
-        </div>
-        <div style="padding: 20px;">
-          <p>
-            Stay tuned for our latest updates, cutting-edge software solutions, and exciting advancements in quantum computing.
-          </p>
-          <p>
-            Visit our <a href="https://qorelabs.org" style="color: #8c52ff; text-decoration: none;">website</a> for more details about what we do.
-          </p>
-          <p>Thank you,<br/><strong>The Qorelabs Team</strong></p>
-        </div>
-        <div style="background-color: #333; color: #fff; text-align: center; padding: 10px; font-size: 14px;">
-          © 2024 Qorelabs. All Rights Reserved.
-        </div>
-      </div>
-    `;
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; background-color: #ffffff; padding: 20px; text-align: center;">
+    <h1 style="color: #8c52ff; margin-top: 0;">Welcome to Qorelabs!</h1>
+    <p style="font-size: 16px; margin: 20px 0;">Thank you for subscribing to Qorelabs. We're thrilled to have you on board!</p>
+    <p style="font-size: 14px; color: #555; margin: 20px 0;">
+      Stay tuned for our latest updates, cutting-edge software solutions, and exciting advancements in quantum computing.
+    </p>
+    <a href="https://qorelabs.org" style="color: #8c52ff; text-decoration: none; font-weight: bold; font-size: 14px;">Visit our website</a>
+    <p style="font-size: 14px; color: #555; margin-top: 20px;">
+      Thank you,<br/>
+      <strong>The Qorelabs Team</strong>
+    </p>
+    <div style="margin-top: 30px; font-size: 12px; color: #777; text-align: center;">
+      © 2024 Qorelabs. All Rights Reserved.
+    </div>
+  </div>
+`;
+
 
     // Send a confirmation email using Zoho SMTP
     const mailOptions = {

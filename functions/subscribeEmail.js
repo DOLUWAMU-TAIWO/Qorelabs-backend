@@ -1,5 +1,6 @@
 const { initializeApp } = require("firebase/app");
 const { getFirestore, collection, query, where, getDocs, addDoc } = require("firebase/firestore");
+const nodemailer = require("nodemailer");
 
 // Firebase configuration
 const firebaseConfig = {
@@ -18,16 +19,26 @@ const db = getFirestore(app);
 // Allowed origins
 const allowedOrigins = ["http://localhost:3000", "https://qorelabs.org"];
 
+// SMTP configuration for Zoho Mail
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.eu",
+  port: 587,
+  secure: false, // Use TLS
+  auth: {
+    user: "service@qorelabs.org",
+    pass: "Dolu6214@", // Replace with your Zoho password or app password
+  },
+});
+
 exports.handler = async (event) => {
-  // Get the origin of the request
   const origin = event.headers.origin;
 
-  // Check if the origin is allowed
+  // CORS headers
   const corsHeaders = {
     "Access-Control-Allow-Origin": allowedOrigins.includes(origin) ? origin : "http://localhost:3000",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "3600", // Cache preflight response for 1 hour
+    "Access-Control-Max-Age": "3600",
   };
 
   // Handle preflight OPTIONS requests
@@ -40,7 +51,6 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Ensure the request body exists
     if (!event.body) {
       return {
         statusCode: 400,
@@ -49,7 +59,6 @@ exports.handler = async (event) => {
       };
     }
 
-    // Parse the request body
     let body;
     try {
       body = JSON.parse(event.body);
@@ -61,7 +70,6 @@ exports.handler = async (event) => {
       };
     }
 
-    // Extract email from the parsed body
     const { email } = body;
 
     if (!email) {
@@ -88,10 +96,43 @@ exports.handler = async (event) => {
     // Save the email to Firestore
     await addDoc(emailsRef, { email });
 
+    // Email template with HTML and inline CSS
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <div style="background-color: #f5f5f5; padding: 20px; text-align: center;">
+          <img src="https://qorelabs.org/logo.png" alt="Qorelabs Logo" style="width: 150px; margin-bottom: 20px;" />
+          <h1 style="color: #8c52ff;">Welcome to Qorelabs!</h1>
+          <p style="font-size: 16px;">Thank you for subscribing to Qorelabs. We're thrilled to have you on board!</p>
+        </div>
+        <div style="padding: 20px;">
+          <p>
+            Stay tuned for our latest updates, cutting-edge software solutions, and exciting advancements in quantum computing.
+          </p>
+          <p>
+            Visit our <a href="https://qorelabs.org" style="color: #8c52ff; text-decoration: none;">website</a> for more details about what we do.
+          </p>
+          <p>Thank you,<br/><strong>The Qorelabs Team</strong></p>
+        </div>
+        <div style="background-color: #333; color: #fff; text-align: center; padding: 10px; font-size: 14px;">
+          © 2024 Qorelabs. All Rights Reserved.
+        </div>
+      </div>
+    `;
+
+    // Send a confirmation email using Zoho SMTP
+    const mailOptions = {
+      from: '"Qorelabs Support" <service@qorelabs.org>', // Sender address and display name
+      to: email, // Recipient email
+      subject: "Welcome to Qorelabs!",
+      html: htmlContent, // HTML content
+    };
+
+    await transporter.sendMail(mailOptions);
+
     return {
       statusCode: 200,
       headers: corsHeaders,
-      body: JSON.stringify({ message: "Email saved successfully!" }),
+      body: JSON.stringify({ message: "Email saved and confirmation email sent successfully!" }),
     };
   } catch (error) {
     console.error("Error:", error);

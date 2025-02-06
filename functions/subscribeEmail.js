@@ -34,12 +34,14 @@ exports.handler = async (event) => {
   const origin = event.headers.origin;
 
   // CORS headers
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": allowedOrigins.includes(origin) ? origin : "http://localhost:3000",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "3600",
-  };
+const corsHeaders = {
+  "Access-Control-Allow-Origin": allowedOrigins.includes(origin) ? origin : "http://localhost:3000",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "3600",
+  "Content-Type": "application/json",
+};
+
 
   // Handle preflight OPTIONS requests
   if (event.httpMethod === "OPTIONS") {

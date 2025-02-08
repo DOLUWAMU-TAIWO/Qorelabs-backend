@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // Use TLS
   auth: {
     user: "service@qorelabs.org",
-    pass: "Dolu6214@", // Replace with your Zoho password or app password
+    pass: "dolukuye@1234", // Replace with your Zoho password or app password
   },
 });
 

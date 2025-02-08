@@ -1,2 +1,6 @@
-[functions]
-  directory = "functions"
+[build]
+  functions = "functions"
+
+[dev]
+  port = 8888
+  functionsPort = 3999
